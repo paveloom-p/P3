@@ -1,0 +1,21 @@
+program main
+use poly
+
+integer n, i, x, a, b
+real y, y2, y4, yn4
+real,dimension(100)::m
+write(*,*) 'Введите степень.'
+read(*,*) n
+write(*,*) 'Введите коэффициенты, начиная со старшего члена.'
+read(*,*) (m(i),i=1,n+1)
+
+write(*,'(i3,e15.7)') (i,a(i),i=1,n+1)
+write(*,*) 'Введите точку, в которой хотите узнать значение.'
+read(*,*) x
+
+call poly1(n,x,m)
+
+call poly2(n,x,m)
+
+
+end

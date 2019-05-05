@@ -1,0 +1,17 @@
+function myresh2(s,b,o) result(r) ! Заголовок функции myresh2,
+implicit none                     ! возвращающей через своё имя МАССИВ.
+integer s(2)
+integer b(s(1)*s(2))
+integer r(s(1),s(2))
+integer, optional:: o(2)     ! Параметр o обязателен лишь при заполнении
+integer q(2) /1,2/           ! матрицы вдоль строки; заполнение матрицы  
+integer l, i, j              ! вниз по cтолбцу  его не требует.    
+if (present(o)) q=o          ! Функция PRESENT (o) выработает true, если 
+do i=1,s(1)                  ! аргумент `o` присутствует при вызове 
+do j=1,s(2)                  ! myresh2.
+  l=i+(j-1)*s(1)
+  if (q(1)==2) l=j+(i-1)*s(2)
+  r(i,j)=b(l)
+enddo 
+enddo
+end function myresh2

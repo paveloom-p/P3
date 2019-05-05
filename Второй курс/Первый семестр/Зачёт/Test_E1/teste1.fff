@@ -1,0 +1,58 @@
+      program teste1               ! Программа тестирует алгоритмы расчета
+      implicit none                ! первой интегрально-показательной функции
+      integer  nres                ! E1(x). Первый -- функция e1mac(x) -- ведет
+      parameter (nres=20)          ! расчет через разложение в ряд Маклорена.
+      real*8 x,r1,r2,a,b,h,gamma   ! выражения
+      real*8 e1mac, e141a, e141c   !                E1(x)+gamma+ln(x) 
+      real*8 e141
+      integer n, i                 !
+      open(unit=nres,file='result')! Второй -- функция e141a(x) -- через   
+      gamma=.57721566490153286061d0!
+      a=0.1d0; b=1.1d0; n=10       ! разложение по смещённым полиномам Чебышева
+      h=(b-a)/n                    ! при рабочем диапазоне аргумента:
+      write(nres,1200)             ! 
+      do i=0,n                     !            0 <= x <= 8.
+        x=a+i*h; r1=e1mac(x)*x     !            
+                 r2=e141a(x)       ! Третья -- функция e141c(x) -- через 
+        write(nres,1201) i,x,r1,r2 ! разложение по смещённым полиномам Чебышева
+      enddo                        ! функции E1(x)*x*exp(x) при рабочем
+      a=1; b=9; n=8                ! диапазоне аргумента:
+      h=(b-a)/n; write(nres,1200)  !                       x >= 5.
+      do i=0,n                     ! 
+        x=a+i*h; r1=e1mac(x)*x      
+                 r2=e141a(x)       
+        write(nres,1201) i,x,r1,r2  
+      enddo                        
+      a=5d0; b=8d0; n=3            ! Сравнение работы e141a и e141с в
+      h=(b-a)/n; write(nres,1300)  ! области перекрытия рабочих диапазонов:
+      do i=0,n                     !            5 <=  x <= 8.
+        x=a+i*h; r1=e141a(x)                            
+        r2=e141c(x)*dexp(-x)/x + gamma+dlog(x)
+        write(nres,1201) i, x, r1, r2
+      enddo
+c      write(nres,'("gamma=",d25.17)') gamma
+c      write(nres,'("dlog(5)=",d25.17)') dlog(5d0)
+c      write(nres,'("dlog(6)=",d25.17)') dlog(6d0)
+c      write(nres,'("dlog(7)=",d25.17)') dlog(7d0)
+c      write(nres,'("dlog(8)=",d25.17)') dlog(8d0)
+c      x=1
+c      write(nres,'("e1mac(  1d0) =",d25.17)') e1mac(x)*x
+c      write(nres,'("e1mac(0.5d0) =",d25.17)') e1mac(x/2)*x/2
+c      write(nres,'("e1mac(minus) =",d25.17)',)
+c     >                             e1mac(x)*x-e1mac(x/2)*x/2,
+c     >                             e141a(x)-e141a(x/2),
+c     >                             e141(x)-e141(x/2)+dlog(2d0)
+c      write(nres,'("e1mac( - + ) =",d25.17)')
+c     >            (  e1mac(x)*x-e1mac(x/2)*x/2-x/2*(1-3*x/8))*144d0/7
+c     >            (  e141a(x)-e141a(x/2)-x/2*(1-3*x/8))*144d0/7
+c     >            (  e141(x)-e141(x/2)+dlog(2d0)-x/2*(1-3*x/8))
+c     >                                                       *144d0/7
+      close(nres)
+      stop 
+ 1200 format(1x,' #  i',4x,'x',16x,'e1mac(x)*x     = ',4x,
+     >                          'e141a=E1+g+ln(x)')
+ 1201 format(1x,2x,i3,d11.3, d25.17, d25.17) 
+ 1300 format(//1x,' #  i',5x,'x',9x,'e141a=E1(x)+g+ln(x) = ',
+     >                     'e141c(x)exp(-x)/x+g+ln(x)')
+      end
+

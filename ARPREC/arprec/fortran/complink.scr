@@ -1,0 +1,6 @@
+gfortran  -m64 -ffree-form -c -o $1.o $1.f90
+/bin/sh ../libtool --tag=CXX --mode=link g++ -O2 -Wall -o $1 $1.o \
+  second.o libarprec_f_main.la libarprecmod.la ../src/libarprec.la \
+  -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin16/6.3.0 \
+  -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin16/6.3.0/../../.. \
+  -lgfortran -lquadmath -lm 

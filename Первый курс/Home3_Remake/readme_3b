@@ -1,0 +1,181 @@
+Замечания:
+
+I.  По поводу Makefile см. приведённый Makefile.
+
+II. Очень полезно при компиляции программы включать опции
+
+           -Wall
+           
+    Тогда компилятор будет предупреждать о встреченных им
+    "шероховатостях" текста, которые могут при неблагоприятном
+    стечении обстоятельств привести к затруднениям, хотя
+    исполнимый код и будет создан. Таких обстоятельств много.
+    
+    В частности, например, при включении -Wall оказывается, что
+    значки табуляции, встречающиеся в исхожном тексте, трактуются
+    как не принадлежащие к символам ФОРТРАН-программы. И по
+    этому поводу выдаётся масса предупреждений. Для того, чтобы
+    избежать их появления, надо после -Wall указать ещё и -Wtabs.
+
+
+Задача 1:    ПРИНЯТА
+========
+
+Задача 2:    ПРИНЯТА
+========
+
+Задача 3:    ПРИНЯТА
+========
+
+do i=1,n
+  t(i)=mod(irand(0),33)-16   ! П: Не работает по какой-то причине,
+                             !    хотя сейчас не так важно.
+enddo                        ! ============================ ??????
+
+Что именно пишется при пропуске:  НАПИШИТЕ (скопируйте результат
+пропуска и пришлите) Возможно подключены не все библиотеки.
+
+Вместо этих трёх строк можно написать то, что написано в программе.
+
+9.153 IRAND — Integer pseudo-random number
+
+Description:
+
+IRAND(FLAG) returns a pseudo-random number from a uniform distribution
+between 0 and a system-dependent limit (which is in most cases
+2147483647).
+
+If FLAG is 0, the next number in the current sequence is returned;
+if FLAG is 1, the generator is restarted by CALL SRAND(0);
+if FLAG has any other value, it is used as a new seed with SRAND.
+
+This intrinsic routine is provided for backwards compatibility with
+GNU Fortran 77. It implements a simple modulo generator as provided
+by g77. For new code, one should consider the use of RANDOM_NUMBER
+as it implements a superior algorithm.
+
+    Standard:
+               GNU extension
+
+       Class:
+               Function
+
+      Syntax:
+               RESULT = IRAND(I)
+
+   Arguments:
+               I Shall be a scalar INTEGER of kind 4.
+
+Return value:
+               The return value is of INTEGER(kind=4) type.
+Example:
+              program test_irand
+              integer,parameter :: seed = 86456
+              call srand(seed)
+              print *, irand(), irand(), irand(), irand()
+              print *, irand(seed), irand(), irand(), irand()
+              end program test_irand
+...............................................................
+9.222 RANDOM_NUMBER — Pseudo-random number
+
+Description:
+
+Returns a single pseudorandom number or an array of pseudorandom
+ numbers from the uniform distribution over the range 0 \leq x < 1.
+
+The runtime-library implements the xorshift1024* random number
+generator (RNG). This generator has a period of 2^{1024} - 1,
+and when using multiple threads up to 2^{512} threads can each
+generate 2^{512} random numbers before any aliasing occurs.
+
+Note that in a multi-threaded program (e.g. using OpenMP directives),
+each thread will have its own random number state. For details of the
+seeding procedure, see the documentation for the RANDOM_SEED intrinsic.
+
+Standard:
+
+    Fortran 95 and later
+    Class:
+             Subroutine
+    Syntax:
+             RANDOM_NUMBER(HARVEST)
+
+    Arguments:
+               HARVEST Shall be a scalar or an array of type REAL.
+
+    Example:
+
+            program test_random_number
+            REAL :: r(5,5)
+            CALL RANDOM_NUMBER(r)
+            end program
+    See also:
+              RANDOM_SEED 
+====================================================================
+
+Задача 4:    Пожалуйста, доведите исправления до верного результата.
+========     В частности, можно резко упростить рабочую часть алгоритма
+             если заметить, что замена 0 на 1, и 1 на 0 достигается
+             просто оператором
+                                   a=1-a
+
+!
+! Сравните Ваш результат с контрольным и подправьте, пожалуйста свой
+! алгоритм. После того, как тестирование пройдёт для -6, попробуйте
+! ввести число 32 
+
+======================================================================
+
+Задача 5:  
+======== 
+              Пожалуйста, ЕЩЁ упростите исходный текст,
+              приняв во внимание тот факт, что выражение
+              ДОПОЛНИТЕЛЬНЫЙ КОД подразумевает знание
+              ответа на вопрос:
+
+               ДОПОЛНИТЕЛЬНЫЙ ДО ЧЕГО?
+
+               Ответ:  Дополнительный до числа -huge(1_1)-1=-128.
+
+ huge(1_1)+1=127+1=128 --- максимальное число типа integer(1) плюс 1=128
+                           (оно не влезет integer(1)),
+
+НО -128, минимальное отрицательное целое, в тип integer(1) влезет.
+
+
+Положительные   Отрицательные
+                           |||||||     
+0   00000000              00000000
+1   00000001              11111111  -1       
+2   00000010              11111101  -2
+.......................
+11  00001011 /----------->11110101  -11
+............X...................
+117 01110101 \----------->10001011  -117
+...............................
+126 01111101              10000010  -126
+127 01111111              10000001  -127    
+128  НЕТ                  10000000  -128
+                           |||||||<-----------------------
+                          ^                               \
+                          |                               |
+Знаковая (старшая единица) дополнительного кода           |
+будучи дополнена (сложена с) прямым кодом положительного k"
+даст вместе с ним дополнительный код числа -128+k
+
+Так что, если
+
+ к -128+прямой код 1, то получим дополнительный код числа -127
+ к -128+прямой код 127 ..................................   -1
+ к -128+прямой код положительного k, .................... -128+k
+
+В частности,
+             -128+11=-117
+             -128+117=-11
+             
+Задача 6:
+======== 
+         Пожалуйста, устраните кракозябры при выводе верного результата.
+
+Задача 7:     ПРИНЯТА
+======== 
